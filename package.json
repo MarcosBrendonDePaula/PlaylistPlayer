@@ -1,0 +1,19 @@
+{
+  "name": "playlistplayer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarcosBrendonDePaula/PlaylistPlayer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarcosBrendonDePaula/PlaylistPlayer/issues"
+  },
+  "homepage": "https://github.com/MarcosBrendonDePaula/PlaylistPlayer#readme"
+}

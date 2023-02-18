@@ -1,0 +1,57 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>PlayListDownload</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="success">
+  <ion-card color="secondary">
+    <ion-card-header>
+      <ion-card-title>Music Download</ion-card-title>
+      <ion-card-subtitle>Fazer download de musica unica</ion-card-subtitle>
+    </ion-card-header>
+  
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="4">
+            <ion-item fill="outline">
+              <ion-label position="floating">VIDEO ID</ion-label>
+              <ion-input type="text" [(ngModel)]="variables.videoId"/>
+            </ion-item>
+          </ion-col>
+          <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="4">
+            <ion-button (click)="download()">DOWNLOAD</ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+  
+
+
+  <ion-accordion-group>
+    <ion-accordion value="first">
+      <ion-item slot="header" color="light">
+        <ion-label>Musicas</ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <ion-grid>
+          <ion-row >
+            <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="4" *ngFor="let musica of musicas;">
+              <music [data]="musica">
+              </music>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+
+
+</ion-content>
