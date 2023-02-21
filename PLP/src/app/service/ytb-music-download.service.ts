@@ -59,19 +59,16 @@ export class YtbMusicDownloadService {
   } 
 
   async getMusic(videoId:string):Promise<YtbMusic>{
-    let resp = await lastValueFrom(this.http.get(`${environment.url_ytd}/audio/get/${videoId}`, { responseType: 'json' }))
+    
+    let resp:any = await lastValueFrom(this.http.get(`${environment.url_ytd}/audio/get/${videoId}`, { responseType: 'json' }))
+    if(resp?.percentage == undefined){
+      return <YtbMusic><unknown>undefined;
+    }
     let response:YtbMusic = this.parseYtbMusic(resp);
     if(response.progress?.percentage != 100){
       return response;
     } 
     else {
-      // try {
-      //   let resp = await lastValueFrom(this.http.get(response.thumbnail ?? "", { responseType: 'blob' }))
-      //   const blob = new Blob([resp], { type: 'image/jpeg' });
-      //   response.thumbnail = await blob.text();
-      // } catch (error) {
-        
-      // }
       try {
         let file_blob = await lastValueFrom(this.http.get(response.file ?? "", { responseType: 'blob' }))
         const file = <string> await this.blobToBase64(file_blob);

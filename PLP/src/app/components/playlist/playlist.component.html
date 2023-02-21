@@ -13,10 +13,14 @@
           </ion-button>
         </ion-col>
         <ion-col>
-          <ion-button expand="block" (click)="pp()">
-            <ion-icon name="pause-circle-outline" *ngIf="tocando"></ion-icon>
-            <ion-icon name="play-circle-outline"  *ngIf="!tocando"></ion-icon>
+          <ion-button expand="block" *ngIf="this.tocando; else elseBlock" (click)="stop()">
+            <ion-icon name="pause-circle-outline"></ion-icon>
           </ion-button>
+          <ng-template #elseBlock>
+            <ion-button expand="block" (click)="play()">
+              <ion-icon name="play-circle-outline"></ion-icon>
+            </ion-button>
+          </ng-template>          
         </ion-col>
         <ion-col>
           <ion-button (click)="proximo()" expand="block">

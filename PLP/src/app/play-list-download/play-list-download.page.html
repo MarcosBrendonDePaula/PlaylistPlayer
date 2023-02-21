@@ -23,11 +23,11 @@
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <ion-button (click)="cancel()">Cancel</ion-button>
+            <ion-button fill="solid" color="danger" (click)="cancel()">Cancel</ion-button>
           </ion-buttons>
-          <ion-title>Download {{model_vars?.playlist_info?.snippet?.title}}</ion-title>
+          <ion-title>{{model_vars?.playlist_info?.snippet?.title}}</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+            <ion-button fill="solid" color="success" (click)="confirm()" [strong]="true">Confirm</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
@@ -37,7 +37,6 @@
           <img alt="" src="{{model_vars?.playlist_info?.snippet?.thumbnails?.maxres?.url}}" />
           <ion-card-header>
           </ion-card-header>
-        
           <ion-card-content>
             <ion-item>
               <ion-list [inset]="true">
@@ -55,13 +54,18 @@
   <ion-modal #DownloadMusic (willDismiss)="onWillDismiss($event)">
     <ng-template>
       <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button fill="solid" color="danger" (click)="cancelDownload()">Parar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
         
         <ion-card>
           <img alt="Silhouette of mountains" src="{{model_vars?.video_atual?.snippet?.thumbnails?.maxres?.url}}" />
           <ion-card-header>
-            <ion-card-title>DOWNLOADING ...</ion-card-title>
+            <ion-card-title>{{(this.model_vars.cancelar)?"PARANDO":"DOWNLOADING"}} ...</ion-card-title>
             <ion-card-subtitle>{{model_vars?.video_atual?.snippet?.title}}</ion-card-subtitle>
           </ion-card-header>
         
@@ -75,7 +79,12 @@
 
   <ion-grid fixed>
     <ion-row>
-      <ion-col *ngFor="let playlist of playlists;" sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="6">
+      <ion-col *ngFor="let playlist of playlists;let i=index;" sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="6">
+        <ion-toolbar>
+          <ion-buttons slot="end">
+            <ion-button fill="solid" color="danger" (click)="removerPlayList(i)" [strong]="true"><ion-icon name="trash-outline"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-toolbar>
         <app-playlist [data]="playlist"></app-playlist>
       </ion-col>
     </ion-row>

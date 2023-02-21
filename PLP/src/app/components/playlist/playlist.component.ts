@@ -26,7 +26,6 @@ export class PlaylistComponent implements OnInit {
 
   constructor(private storage: Storage) { }
 
-  
   async ngOnInit() {
     if(await this.storage.get('musics') == null){
       await this.storage.set('musics',this.musicas);
@@ -59,24 +58,28 @@ export class PlaylistComponent implements OnInit {
     this.MusicTocando = this.musicasContainer.toArray()[this.tocando_id]
   }
 
-  async pp(){
-    
-    if(this.tocando){
-      this.MusicTocando.playPause()
-      this.tocando = false;
-    }
-
+  async play(){
     this.loadPosition()
-    this.MusicTocando.playPause()
+    await this.MusicTocando.playPause();
+    this.MusicTocando.tocando = true;
     this.tocando = true;
   }
   
+  async stop(){
+    if(this.tocando){
+      this.tocando = false;
+      this.MusicTocando.player.stop();
+      this.MusicTocando.tocando = false;
+    }
+  }
+
   async anterior(){
     if(this.tocando_id-1 == -1){
       this.tocando_id = this.musicasContainer.length -1; 
     }
     this.tocando_id -= 1
-    this.pp()
+    this.stop()
+    this.play()
   }
 
   async proximo(){
@@ -84,6 +87,7 @@ export class PlaylistComponent implements OnInit {
       this.tocando_id = 0;
     }
     this.tocando_id+=1
-    this.pp()
+    this.stop()
+    this.play()
   }
 }

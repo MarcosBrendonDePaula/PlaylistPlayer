@@ -25,11 +25,6 @@ export class MusicComponent implements OnInit {
   constructor(private storage: Storage) {}
 
   async ngOnInit() {
-    this.inicializar()
-  }
-
-  async inicializar(){
-    
   }
 
   async createBlob(base64:string) {
@@ -38,9 +33,7 @@ export class MusicComponent implements OnInit {
     return myBlob;
   } 
 
-
   async playPause(){
-
     if(this.player == undefined){
       let music = await this.createBlob(LZString.decompress(await this.storage.get(`m-c-${this.data.videoId}`) ?? ""));
       this.player = new Howl({
@@ -61,7 +54,6 @@ export class MusicComponent implements OnInit {
       this.player.play();
     }
     this.tocando = !this.tocando;
-    
   }
 
 }
