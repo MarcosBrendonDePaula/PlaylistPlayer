@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { YtbMusic, YtbMusicProgress } from '../../interfaces/youtube';
 import { Storage } from '@ionic/storage';
 
@@ -15,11 +15,11 @@ export class MusicComponent implements OnInit {
 
   @ViewChild('ProgressBar')ProgressBar!: ElementRef;
 
-  @Input()
-  data!: YtbMusic;
+  @Output() OnEnd = new EventEmitter();
 
+  @Input() data!: YtbMusic;
+  
   player:any;
-
   tocando:boolean = false;
   
   constructor(private storage: Storage) {}
@@ -29,14 +29,7 @@ export class MusicComponent implements OnInit {
   }
 
   async inicializar(){
-    let music = await this.createBlob(LZString.decompress(this.data.file ?? ""));
-    this.player = new Howl({
-      src: [URL.createObjectURL(music)],
-      html5: true,
-      format: ['mp3', 'wav'],
-      onload: () => {
-      }
-    });
+    
   }
 
   async createBlob(base64:string) {
@@ -46,7 +39,22 @@ export class MusicComponent implements OnInit {
   } 
 
 
-  playPause(){
+  async playPause(){
+
+    if(this.player == undefined){
+      let music = await this.createBlob(LZString.decompress(await this.storage.get(`m-c-${this.data.videoId}`) ?? ""));
+      this.player = new Howl({
+        src: [URL.createObjectURL(music)],
+        html5: true,
+        format: ['mp3', 'wav'],
+        onload: () => {
+        },
+        onend: ()=>{
+          this.OnEnd.emit()
+        },
+      });
+    }
+
     if(this.tocando){
       this.player.pause()
     }else{

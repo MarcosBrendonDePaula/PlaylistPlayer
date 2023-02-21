@@ -1,5 +1,12 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
+import { IonModal, IonSearchbar } from '@ionic/angular';
+import { YtInfoService } from '../service/yt-info.service';
 
+import {YtbMusicDownloadService } from '../service/ytb-music-download.service'
+import {Storage} from '@ionic/storage';
+import {LZString} from 'lzstring.ts';
+import {YtbMusic} from '../interfaces/ytb-music';
+import {Playlist} from '../interfaces/playlist';
 
 @Component({
   selector: 'app-play-list-download',
@@ -8,16 +15,131 @@ import { Component, OnInit} from '@angular/core';
 })
 export class PlayListDownloadPage implements OnInit {
   
- 
-  
-  constructor() { }
-  
+  @ViewChild('viewPlayList', { static: true }) modal!: IonModal;
+  @ViewChild('DownloadMusic', { static: true }) modalMusicDownload!: IonModal;
+  @ViewChild(IonSearchbar) searchbar!: IonSearchbar;
 
+  name: string | undefined;
+  
+  constructor(private ytbInfo:YtInfoService, private YtbMusicDownload:YtbMusicDownloadService, private storage: Storage) { }
+  
+  musicas:Array<YtbMusic> = [];
+  musicas_ids:any = []
+
+  playlists:Array<any> =[];
+  videos:Array<any> = []
+  async find(){
+    if(this.searchbar.value){
+      let PlaylistId = this.searchbar.value
+      
+      let playlist:any = await this.ytbInfo.getPlayList(PlaylistId);
+      let playlistItems:any = await this.ytbInfo.getPlayListItems(PlaylistId);
+      
+      if(playlistItems?.items.length > 0){
+        this.model_vars.playlist_info = playlist?.items[0];
+        this.videos = playlistItems?.items;
+        this.modal.present()
+      }
+      
+    }
+  }
+
+  async save(){
+    await this.storage.set('playlists', this.playlists);
+    await this.storage.set('musics', this.musicas);
+  }
+
+  checkifExist(videoId:string):boolean{
+    
+    return false;
+  }
 
   async ngOnInit() {
+    if(await this.storage.get('playlists') == null){
+      await this.storage.set('playlists',this.playlists);
+    }
     
+    if(await this.storage.get('musics') == null){
+      await this.storage.set('musics',this.musicas);
+    }
+
+    this.musicas = await this.storage.get('musics');
+    for(let musica of this.musicas){
+      this.musicas_ids.push(musica.videoId)
+    }
+
+    this.playlists = await this.storage.get('playlists');
   }
   
+  model_vars:any = {
+    playlist_info: {},
+    playlist_ids:[],
+    video_atual: {},
+    img_source: "",
+    title: "",
+    author: "",
+    progress : 0.1
+  }
+
+  cancel() {
+    this.modal.dismiss(null, 'cancel');
+  }
+
+  async confirm() {
+    this.model_vars.playlist_ids = [];
+    this.modalMusicDownload.present();
+    this.modal.dismiss();
+    let count = 1;
+
+    for(let video of this.videos){
+      if(!this.modalMusicDownload.isOpen){
+        this.modalMusicDownload.present();
+      }
+      this.model_vars.progress = ((count / this.videos.length))
+      this.model_vars.video_atual = video;
+      
+      if(this.musicas_ids.indexOf(video?.snippet?.resourceId?.videoId) == -1){
+        await this.download_music(video?.snippet?.resourceId?.videoId)
+      }else{
+        console.log(`${video?.snippet?.resourceId?.videoId} ja existe`)
+      }
+      
+      this.model_vars.playlist_ids.push(video?.snippet?.resourceId?.videoId)
+      count+=1;
+    }
+    
+    let playlist_temp:Playlist = {
+      title: this.model_vars.playlist_info?.snippet?.title,
+      video_ids: this.model_vars.playlist_ids,
+      videos:[],
+      thumbnail:this.model_vars.playlist_info?.snippet?.thumbnails?.high?.url,
+    };
+
+    this.playlists.push(playlist_temp)
+    this.save()
+  }
+
+  onWillDismiss(event: Event) {
+    console.log(event)
+  }
   
+  async download_music(music_id:string){
+    let res = await this.YtbMusicDownload.getMusic(music_id);
+
+    while(res.stats != "finished"){
+      let update_in:any = res.progress?.estimative;
+      if(update_in == undefined){
+        update_in = 3000;
+      }
+      await new Promise(r => setTimeout(r, update_in));
+      res = await this.YtbMusicDownload.getMusic(music_id);
+    }
+    
+    let compressed = LZString.compress(res.file ?? "")
+    await this.storage.set(`m-c-${res.videoId}`, compressed);
+    res.file = `m-c-${res.videoId}`;
+    this.musicas.push(res);
+    this.save()
+  }
 
 }

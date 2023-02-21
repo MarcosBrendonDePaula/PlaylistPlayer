@@ -53,5 +53,5 @@ export class MusicDownloadPage implements OnInit {
     this.musicas.push(res);
     this.save()
   }
-
+  
 }

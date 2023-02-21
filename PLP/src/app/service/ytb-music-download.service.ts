@@ -72,10 +72,14 @@ export class YtbMusicDownloadService {
       // } catch (error) {
         
       // }
+      try {
+        let file_blob = await lastValueFrom(this.http.get(response.file ?? "", { responseType: 'blob' }))
+        const file = <string> await this.blobToBase64(file_blob);
+        response.file = file;
+      } catch (error) {
+        response.file = "";
+      }
       
-      let file_blob = await lastValueFrom(this.http.get(response.file ?? "", { responseType: 'blob' }))
-      const file = <string> await this.blobToBase64(file_blob);
-      response.file = file;
     }
     return response;
   }

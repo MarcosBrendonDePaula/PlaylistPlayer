@@ -1,0 +1,48 @@
+<ion-card>
+  <img alt="{{data.title}}" src="{{data.thumbnail}}" />
+  <ion-card-header>
+    <ion-card-title>{{data.title}}</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button (click)="anterior()" expand="block">
+            <ion-icon slot="icon-only" name="play-skip-back-sharp"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button expand="block" (click)="pp()">
+            <ion-icon name="pause-circle-outline" *ngIf="tocando"></ion-icon>
+            <ion-icon name="play-circle-outline"  *ngIf="!tocando"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col>
+          <ion-button (click)="proximo()" expand="block">
+            <ion-icon slot="icon-only" name="play-skip-forward-sharp"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-card-content>
+  
+  <ion-accordion-group>
+    <ion-accordion value="first">
+      <ion-item slot="header" color="light">
+        <ion-label>Musicas</ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <ion-grid>
+          <ion-row>
+            <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="4" *ngFor="let musica of musicas; let i = index">
+              <music #musica (OnEnd)="this.musicaTerminou()" [data]="musica" >
+              </music>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
+  
+</ion-card>

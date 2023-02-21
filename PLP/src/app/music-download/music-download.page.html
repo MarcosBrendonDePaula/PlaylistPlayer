@@ -4,24 +4,20 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="success">
-  <ion-card color="secondary">
-    <ion-card-header>
-      <ion-card-title>Music Download</ion-card-title>
-      <ion-card-subtitle>Fazer download de musica unica</ion-card-subtitle>
-    </ion-card-header>
-  
+<ion-content class="ion-justify-content-center ion-justify-content-center">
+  <ion-card color="secondary"> 
     <ion-card-content>
       <ion-grid>
-        <ion-row>
+        <ion-row class="ion-justify-content-center">
           <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="4">
             <ion-item fill="outline">
               <ion-label position="floating">VIDEO ID</ion-label>
               <ion-input type="text" [(ngModel)]="variables.videoId"/>
             </ion-item>
           </ion-col>
-          <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="4">
-            <ion-button (click)="download()">DOWNLOAD</ion-button>
+
+          <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="4" >
+            <ion-button color="warning" class="download" (click)="download()">DOWNLOAD</ion-button>
           </ion-col>
         </ion-row>
         <ion-row>
@@ -30,28 +26,26 @@
           </ion-col>
         </ion-row>
       </ion-grid>
+
+      <ion-accordion-group>
+        <ion-accordion value="first">
+          <ion-item slot="header" color="light">
+            <ion-label>Musicas</ion-label>
+          </ion-item>
+          <div class="ion-padding" slot="content">
+            <ion-grid>
+              <ion-row >
+                <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="4" *ngFor="let musica of musicas;">
+                  <music [data]="musica">
+                  </music>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+
     </ion-card-content>
   </ion-card>
-  
-
-
-  <ion-accordion-group>
-    <ion-accordion value="first">
-      <ion-item slot="header" color="light">
-        <ion-label>Musicas</ion-label>
-      </ion-item>
-      <div class="ion-padding" slot="content">
-        <ion-grid>
-          <ion-row >
-            <ion-col sizeXs="12" sizeSm="12" sizeMd="6" sizeLg="4" *ngFor="let musica of musicas;">
-              <music [data]="musica">
-              </music>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </div>
-    </ion-accordion>
-  </ion-accordion-group>
-
 
 </ion-content>

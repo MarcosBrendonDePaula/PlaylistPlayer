@@ -10,8 +10,11 @@ import { AppRoutingModule } from './app-routing.module';
 
 import {YtbApiService} from './service/ytb-api.service'
 import { HttpClientModule } from '@angular/common/http'
-import {YtbMusicDownloadService } from './service/ytb-music-download.service'
+
 import { ComponentsModule } from './components/components.module';
+
+import {YtbMusicDownloadService } from './service/ytb-music-download.service'
+import {YtInfoService } from './service/yt-info.service'
 
 import { IonicStorageModule } from '@ionic/storage';
 
@@ -28,7 +31,8 @@ import { IonicStorageModule } from '@ionic/storage';
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     YtbApiService,
-    YtbMusicDownloadService
+    YtbMusicDownloadService,
+    YtInfoService
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent],
