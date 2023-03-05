@@ -39,7 +39,7 @@ export class MusicDownloadPage implements OnInit {
   getVideoId(videoUrl:string){
     let v_id = videoUrl;
     if(videoUrl.indexOf('https://www.youtube.com/watch?v=') != -1){
-      v_id = videoUrl.split('https://www.youtube.com/watch?v=')[0]
+      v_id = videoUrl.split('https://www.youtube.com/watch?v=')[1]
       v_id = v_id.split('&')[0]
     }
     return v_id
@@ -51,9 +51,12 @@ export class MusicDownloadPage implements OnInit {
     while(res.stats != "finished"){
       let update_in:any = res.progress?.estimative;
       await new Promise(r => setTimeout(r, (update_in * 60 * 1000)/4));
-      res = await this.YtbMusicDownload.getMusic(this.variables.videoId);
+      res = await this.YtbMusicDownload.getMusic(this.getVideoId(this.variables.videoId));
     }
-    res.file = LZString.compress(res.file ?? "")
+    //res.file = LZString.compress(res.file ?? "")
+    let compressed = LZString.compress(res.file ?? "")
+    await this.storage.set(`m-c-${res.videoId}`, compressed);
+    res.file = `m-c-${res.videoId}`;
     this.musicas.push(res);
     this.save()
   }
