@@ -18,6 +18,8 @@ export class MusicDownloadPage implements OnInit {
     videoId: "zswkH2PkQE8"
   }
 
+
+
   async load(){
     if(await this.storage.get('musics') == null){
       await this.storage.set('musics',this.musicas);
@@ -32,21 +34,23 @@ export class MusicDownloadPage implements OnInit {
 
   constructor( private YtbMusicDownload:YtbMusicDownloadService, private storage: Storage) { }
 
-  ngOnInit() {
-    this.load().then(()=>{
+  ngOnInit() {}
 
-    })
+  getVideoId(videoUrl:string){
+    let v_id = videoUrl;
+    if(videoUrl.indexOf('https://www.youtube.com/watch?v=') != -1){
+      v_id = videoUrl.split('https://www.youtube.com/watch?v=')[0]
+      v_id = v_id.split('&')[0]
+    }
+    return v_id
   }
 
   async download(){
-    let res = await this.YtbMusicDownload.getMusic(this.variables.videoId);
+    let res = await this.YtbMusicDownload.getMusic(this.getVideoId(this.variables.videoId));
 
     while(res.stats != "finished"){
       let update_in:any = res.progress?.estimative;
-      if(update_in == undefined){
-        update_in = 3000;
-      }
-      await new Promise(r => setTimeout(r, update_in));
+      await new Promise(r => setTimeout(r, (update_in * 60 * 1000)/4));
       res = await this.YtbMusicDownload.getMusic(this.variables.videoId);
     }
     res.file = LZString.compress(res.file ?? "")

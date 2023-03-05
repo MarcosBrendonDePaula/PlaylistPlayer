@@ -1,7 +1,29 @@
 <ion-card>
-  <img alt="{{data.title}}" src="{{data.thumbnail}}" />
+  <ion-list>
+    <ion-item>
+      <ion-badge slot="start">{{((PlaylistInfo.music_time_played)/60000).toFixed(2)}}</ion-badge>
+      <ion-label>Minutos tocados</ion-label>
+      <ng-content slot="end">
+      </ng-content>
+    </ion-item>
+  </ion-list>
+  <ion-row>
+    <ion-col col-1></ion-col>
+    <ion-col col-10>
+      <img *ngIf="this.tocando; else elseBlockImg" alt="{{MusicTocando.data.title}}" src="{{MusicTocando.data.thumbnail}}" />
+      <ng-template #elseBlockImg>
+        <img alt="{{data.title}}" src="{{data.thumbnail}}" />
+      </ng-template>
+    </ion-col>
+    <ion-col col-1></ion-col>
+  </ion-row>
+  
   <ion-card-header>
-    <ion-card-title>{{data.title}}</ion-card-title>
+    <ion-card-title *ngIf="this.tocando; else elseBlockTitle">{{MusicTocando.data.title}}</ion-card-title>
+    <ng-template #elseBlockTitle>
+      <ion-card-title>{{data.title}}</ion-card-title>
+    </ng-template>
+    
   </ion-card-header>
 
   <ion-card-content>

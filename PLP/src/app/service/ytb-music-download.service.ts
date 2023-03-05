@@ -64,7 +64,6 @@ export class YtbMusicDownloadService {
     if(resp?.progress == undefined){
       return <YtbMusic><unknown>undefined;
     }
-    console.log("nao retornou")
     let response:YtbMusic = this.parseYtbMusic(resp);
     if(response.progress?.percentage != 100){
       return response;

@@ -26,7 +26,8 @@ export class PlayListDownloadPage implements OnInit {
   musicas:Array<YtbMusic> = [];
   musicas_ids:any = []
 
-  playlists:Array<any> =[];
+  playlistId:string = "";
+  playlists:Array<any> = [];
   videos:Array<any> = [];
 
   getPlayListLink(link:string){
@@ -49,7 +50,7 @@ export class PlayListDownloadPage implements OnInit {
         PlaylistId = ytb_link;
       let playlist:any = await this.ytbInfo.getPlayList(PlaylistId);
       let playlistItems:any = await this.ytbInfo.getPlayListItems(PlaylistId);
-      
+      this.playlistId = PlaylistId;
       if(playlistItems?.items.length > 0){
         this.model_vars.playlist_info = playlist?.items[0];
         this.videos = playlistItems?.items;
@@ -125,10 +126,11 @@ export class PlayListDownloadPage implements OnInit {
     }
     while(res.stats != "finished"){
       let update_in:any = res.progress?.estimative;
+      
       if(update_in == undefined){
-        update_in = 3000;
+        update_in = 1;
       }
-      await new Promise(r => setTimeout(r, update_in));
+      await new Promise(r => setTimeout(r, (update_in * 60 * 1000)/4));
       res = await this.YtbMusicDownload.getMusic(music_id);
     }
     
@@ -172,6 +174,7 @@ export class PlayListDownloadPage implements OnInit {
       video_ids: this.model_vars.playlist_ids,
       videos:[],
       thumbnail:this.model_vars.playlist_info?.snippet?.thumbnails?.high?.url,
+      id: this.playlistId
     };
 
     this.playlists.push(playlist_temp)
