@@ -63,7 +63,10 @@
       <ion-content class="ion-padding">
         
         <ion-card>
-          <img alt="Silhouette of mountains" src="{{model_vars?.video_atual?.snippet?.thumbnails?.maxres?.url}}" />
+          
+          <img alt="" src="{{model_vars?.video_atual?.snippet?.thumbnails?.maxres?.url}}" />
+          <ion-progress-bar [value]="model_vars?.atual_download_progress"></ion-progress-bar>
+
           <ion-card-header>
             <ion-card-title>{{(this.model_vars.cancelar)?"PARANDO":"DOWNLOADING"}} ...</ion-card-title>
             <ion-card-subtitle>{{model_vars?.video_atual?.snippet?.title}}</ion-card-subtitle>

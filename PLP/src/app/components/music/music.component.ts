@@ -33,25 +33,29 @@ export class MusicComponent implements OnInit {
     return myBlob;
   } 
 
-  async playPause(){
-    if(this.player == undefined){
+  async playPause() {
+    if (this.player == undefined) {
       let music = await this.createBlob(LZString.decompress(await this.storage.get(`m-c-${this.data.videoId}`) ?? ""));
-      this.player = new Howl({
-        src: [URL.createObjectURL(music)],
-        html5: true,
-        format: ['mp3', 'wav'],
-        onload: () => {
-        },
-        onend: ()=>{
-          this.OnEnd.emit()
-        },
+      const promise = new Promise<void>((resolve) => {
+        this.player = new Howl({
+          src: [URL.createObjectURL(music)],
+          html5: true,
+          format: ['mp3', 'wav'],
+          onload: () => {
+            resolve();
+          },
+          onend: () => {
+            this.OnEnd.emit();
+          },
+        });
       });
+      await promise;
     }
 
     if(this.tocando){
-      this.player.pause()
+      await this.player.pause()
     }else{
-      this.player.play();
+      await this.player.play();
     }
     this.tocando = !this.tocando;
   }

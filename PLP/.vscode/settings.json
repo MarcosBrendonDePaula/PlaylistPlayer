@@ -1,5 +1,7 @@
 {
     "cSpell.words": [
         "tocando"
-    ]
+    ],
+    "CodeGPT.apiKey": "OpenAI",
+    "CodeGPT.maxTokens": 8000
 }

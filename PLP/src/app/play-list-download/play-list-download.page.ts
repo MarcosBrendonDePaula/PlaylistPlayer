@@ -90,6 +90,7 @@ export class PlayListDownloadPage implements OnInit {
     playlist_info: {},
     playlist_ids:[],
     video_atual: {},
+    atual_download_progress: 0,
     img_source: "",
     title: "",
     author: "",
@@ -126,11 +127,12 @@ export class PlayListDownloadPage implements OnInit {
     }
     while(res.stats != "finished"){
       let update_in:any = res.progress?.estimative;
-      
+      let atual:any = res.progress?.percentage ?? 1;
+      this.model_vars.atual_download_progress = (atual * 0.01)
       if(update_in == undefined){
         update_in = 1;
       }
-      await new Promise(r => setTimeout(r, (update_in * 60 * 1000)/4));
+      await new Promise(r => setTimeout(r, (update_in * 60 * 1000)/8));
       res = await this.YtbMusicDownload.getMusic(music_id);
     }
     
@@ -139,6 +141,7 @@ export class PlayListDownloadPage implements OnInit {
     res.file = `m-c-${res.videoId}`;
     this.musicas.push(res);
     this.save()
+    this.model_vars.atual_download_progress = 0;
   }
 
   async downloadPlayList(){
